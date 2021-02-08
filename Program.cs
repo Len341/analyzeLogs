@@ -15,6 +15,11 @@ namespace analyzeLogs
             string[] logs = getLogs(Directory.GetCurrentDirectory() + "\\Logs");
             string updateText = "";
             List<double> executionTimes = new List<double>();
+            Dictionary<DateTime, Tuple<double, int>> averageExecutionByDate = new Dictionary<DateTime, Tuple<double, int>>();
+            Dictionary<int, Tuple<double, int>> averageExecutionByHour = new Dictionary<int, Tuple<double, int>>();
+            Dictionary<DateTime, Tuple<int, int>> updatesByDate = new Dictionary<DateTime, Tuple<int, int>>();
+            Dictionary<int, Tuple<int, int>> updatesByHour = new Dictionary<int, Tuple<int, int>>();
+
 
             updateText = processLogs(logs, updateText, executionTimes);
 
@@ -24,16 +29,58 @@ namespace analyzeLogs
             builder.AppendLine().AppendLine();
             foreach(var item in data.averageExecutionTimeByDay)
             {
-
+                if(averageExecutionByDate.ContainsKey(item.day))
+                {
+                    averageExecutionByDate[item.day] = Tuple.Create(averageExecutionByDate[item.day].Item1 + item.executionTime,
+                        averageExecutionByDate[item.day].Item2 + 1);
+                }
+                else
+                {
+                    averageExecutionByDate[item.day] = Tuple.Create(item.executionTime, 1);
+                }
+            }
+            foreach(var item in data.averageExecutionTimeByHour)
+            {
+                if (averageExecutionByHour.ContainsKey(item.hour))
+                {
+                    averageExecutionByHour[item.hour] = Tuple.Create(averageExecutionByHour[item.hour].Item1 + item.executionTime,
+                        averageExecutionByHour[item.hour].Item2 + 1);
+                }
+                else
+                {
+                    averageExecutionByHour[item.hour] = Tuple.Create(item.executionTime, 1);
+                }
+            }
+            foreach(var item in data.numberOfUpdatesByDay)
+            {
+                if (updatesByDate.ContainsKey(item.day))
+                {
+                    updatesByDate[item.day] = Tuple.Create(updatesByDate[item.day].Item1 + item.updates, updatesByDate[item.day].Item2 + 1);
+                }
+                else
+                {
+                    updatesByDate[item.day] = Tuple.Create(item.updates, 1);
+                }
+            }
+            foreach(var item in data.avgNumberOfUpdatesByHour)
+            {
+                if (updatesByHour.ContainsKey(item.hour))
+                {
+                    updatesByHour[item.hour] = Tuple.Create(updatesByHour[item.hour].Item1 + item.updates, updatesByHour[item.hour].Item2 + 1);
+                }
+                else
+                {
+                    updatesByHour[item.hour] = Tuple.Create(item.updates, 1);
+                }
             }
 
             data.maxExecutionTime = executionTimes.Max();
             data.minExecutionTime = executionTimes.Min();
             data.averageExecutionTime = (executionTimes.Sum()) / executionTimes.Count;
 
-            Console.WriteLine(data.averageExecutionTimeByDay);
-            
-            Console.WriteLine(data.averageExecutionTimeByHour);
+            Console.WriteLine(averageExecutionByDate);
+            Console.WriteLine(averageExecutionByHour);
+
             Console.WriteLine(data.numberOfUpdatesByDay);
             Console.WriteLine(data.avgNumberOfUpdatesByHour);
 
