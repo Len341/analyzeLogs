@@ -147,41 +147,47 @@ namespace analyzeLogs
             {
                 string text = File.ReadAllText(log);
                 string date = log.Substring(log.LastIndexOf(@"Logs\") + 5, 19);
-                date = date.Split(' ')[0]+ date.Split(' ')[1].Replace("-",":");
+                date = date.Split(' ')[0] + date.Split(' ')[1].Replace("-", ":");
                 date = date.Insert(10, " ");
                 updateText = text;
                 getUpdates(updateText);
                 DateTime starttime = DateTime.Parse(date, System.Globalization.CultureInfo.InvariantCulture);
                 DateTime endtime = DateTime.Parse(text.Substring(text.LastIndexOf(']') - 19, 19), System.Globalization.CultureInfo.InvariantCulture);
                 double executionTime = endtime.Subtract(starttime).TotalSeconds;
-                if(starttime.Hour == 23 || starttime.Hour == 0)
-                {
-                    if(endtime.ToString().Split(' ')[1].Split(':')[0].Contains("12"))
-                    {
-                        string newEndTime = (endtime.ToString().Split(' ')[0] + 
-                            endtime.ToString().Split(' ')[1].Split(':')[0].Replace("12", "00") + ":" +
-                            endtime.ToString().Split(' ')[1].Split(':')[1] + ":" + endtime.ToString().Split(' ')[1].Split(':')[2]).Insert(10, " ");
-                        endtime = DateTime.Parse(newEndTime, System.Globalization.CultureInfo.InvariantCulture);
-
-                    }else if(endtime.ToString().Split(' ')[1].Split(':')[0].Contains("11"))
-                    {
-                        string newEndTime = (endtime.ToString().Split(' ')[0] + 
-                            endtime.ToString().Split(' ')[1].Split(':')[0].Replace("11", "23")+ ":" +
-                            endtime.ToString().Split(' ')[1].Split(':')[1] + ":" + endtime.ToString().Split(' ')[1].Split(':')[2]
-                            ).Insert(10, " ");
-                        endtime = DateTime.Parse(newEndTime, System.Globalization.CultureInfo.InvariantCulture);
-                    }
-                    executionTime = endtime.Subtract(starttime).TotalSeconds;
-                }
-                if (executionTime < 0)
-                {
-                    endtime = endtime.AddHours(12);
-                    executionTime = endtime.Subtract(starttime).TotalSeconds;
-                }
+                ensureCorrectExecutionTimes(starttime, ref endtime, ref executionTime);
                 executionTimes.Add(executionTime);
                 createClasses(starttime, executionTime);
             }
             return updateText;
+        }
+
+        private static void ensureCorrectExecutionTimes(DateTime starttime, ref DateTime endtime, ref double executionTime)
+        {
+            if (starttime.Hour == 23 || starttime.Hour == 0)
+            {
+                if (endtime.ToString().Split(' ')[1].Split(':')[0].Contains("12"))
+                {
+                    string newEndTime = (endtime.ToString().Split(' ')[0] +
+                        endtime.ToString().Split(' ')[1].Split(':')[0].Replace("12", "00") + ":" +
+                        endtime.ToString().Split(' ')[1].Split(':')[1] + ":" + endtime.ToString().Split(' ')[1].Split(':')[2]).Insert(10, " ");
+                    endtime = DateTime.Parse(newEndTime, System.Globalization.CultureInfo.InvariantCulture);
+
+                }
+                else if (endtime.ToString().Split(' ')[1].Split(':')[0].Contains("11"))
+                {
+                    string newEndTime = (endtime.ToString().Split(' ')[0] +
+                        endtime.ToString().Split(' ')[1].Split(':')[0].Replace("11", "23") + ":" +
+                        endtime.ToString().Split(' ')[1].Split(':')[1] + ":" + endtime.ToString().Split(' ')[1].Split(':')[2]
+                        ).Insert(10, " ");
+                    endtime = DateTime.Parse(newEndTime, System.Globalization.CultureInfo.InvariantCulture);
+                }
+                executionTime = endtime.Subtract(starttime).TotalSeconds;
+            }
+            if (executionTime < 0)
+            {
+                endtime = endtime.AddHours(12);
+                executionTime = endtime.Subtract(starttime).TotalSeconds;
+            }
         }
 
         private static void createClasses(DateTime starttime, double executionTime)
