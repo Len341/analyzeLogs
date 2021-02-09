@@ -146,25 +146,18 @@ namespace analyzeLogs
             foreach (string log in logs)
             {
                 string text = File.ReadAllText(log);
+                string date = log.Substring(log.LastIndexOf(@"Logs\") + 5, 19);
+                date = date.Split(' ')[0]+ date.Split(' ')[1].Replace("-",":");
+                date = date.Insert(10, " ");
                 updateText = text;
                 getUpdates(updateText);
-                DateTime.TryParse(text.Substring(text.IndexOf('[') + 1, 19), out DateTime starttime);
+                DateTime.TryParse(date, out DateTime starttime);
                 DateTime.TryParse(text.Substring(text.LastIndexOf(']') - 19, 19), out DateTime endtime);
                 double executionTime = endtime.Subtract(starttime).TotalSeconds;
-                string alternatestartdate = "";
+
                 if (executionTime < 0)
                 {
-                    if (text.IndexOf("Updating at") > 0)
-                    {
-                        alternatestartdate = text.Substring(text.IndexOf("Updating at"));
-                        alternatestartdate = alternatestartdate.Substring(alternatestartdate.IndexOf("Updating at ") + 12,
-                            alternatestartdate.IndexOf("\n") - 12);
-                        DateTime.TryParse(alternatestartdate, out starttime);
-                    }
-                    if (starttime.Hour == 12)
-                    {
-                        endtime = endtime.AddHours(12);
-                    }
+                    endtime = endtime.AddHours(12);
                     executionTime = endtime.Subtract(starttime).TotalSeconds;
                 }
                 executionTimes.Add(executionTime);
