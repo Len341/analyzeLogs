@@ -126,6 +126,7 @@ namespace analyzeLogs
                 {
                     updatesByDate[item.day] = Tuple.Create(item.updates);
                 }
+                totalUpdates += item.updates;
             }
             foreach (var item in data.avgNumberOfUpdatesByHour)
             {
@@ -205,7 +206,6 @@ namespace analyzeLogs
                     updateText.Length - updateText.IndexOf("Keywords remaining after filter:"));
                 updates = Convert.ToInt32(firstUpdates.Substring(32, firstUpdates.IndexOf("\n") - 32).Trim());
                 updateText = firstUpdates.Substring(32);
-                totalUpdates += updates;
             }
         }
 
