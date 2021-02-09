@@ -151,8 +151,9 @@ namespace analyzeLogs
                 date = date.Insert(10, " ");
                 updateText = text;
                 getUpdates(updateText);
-                DateTime.TryParse(date, out DateTime starttime);
-                DateTime.TryParse(text.Substring(text.LastIndexOf(']') - 19, 19), out DateTime endtime);
+                DateTime.TryParse(date, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AdjustToUniversal, out DateTime starttime);
+                DateTime.TryParse(text.Substring(text.LastIndexOf(']') - 19, 19), System.Globalization.CultureInfo.InvariantCulture, 
+                    System.Globalization.DateTimeStyles.AdjustToUniversal, out DateTime endtime);
                 double executionTime = endtime.Subtract(starttime).TotalSeconds;
                 if(starttime.Hour == 23 || starttime.Hour == 0)
                 {
@@ -160,13 +161,15 @@ namespace analyzeLogs
                     {
                         string newEndTime = (endtime.ToString().Split(' ')[0] + 
                             endtime.ToString().Split(' ')[1].Replace("12", "00")).Insert(10, " ");
-                        DateTime.TryParse(newEndTime, out endtime);
+                        DateTime.TryParse(newEndTime, System.Globalization.CultureInfo.InvariantCulture, 
+                            System.Globalization.DateTimeStyles.AdjustToUniversal, out endtime);
 
                     }else if(endtime.ToString().Split(' ')[1].Split(':')[0].Contains("11"))
                     {
                         string newEndTime = (endtime.ToString().Split(' ')[0] + 
                             endtime.ToString().Split(' ')[1].Replace("11", "23")).Insert(10, " ");
-                        DateTime.TryParse(newEndTime, out endtime);
+                        DateTime.TryParse(newEndTime, System.Globalization.CultureInfo.InvariantCulture, 
+                            System.Globalization.DateTimeStyles.AdjustToUniversal, out endtime);
                     }
                     
                     executionTime = endtime.Subtract(starttime).TotalSeconds;
