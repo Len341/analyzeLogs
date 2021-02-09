@@ -154,7 +154,23 @@ namespace analyzeLogs
                 DateTime.TryParse(date, out DateTime starttime);
                 DateTime.TryParse(text.Substring(text.LastIndexOf(']') - 19, 19), out DateTime endtime);
                 double executionTime = endtime.Subtract(starttime).TotalSeconds;
+                if(starttime.Hour == 23 || starttime.Hour == 0)
+                {
+                    if(endtime.ToString().Split(' ')[1].Split(':')[0].Contains("12"))
+                    {
+                        string newEndTime = (endtime.ToString().Split(' ')[0] + 
+                            endtime.ToString().Split(' ')[1].Replace("12", "00")).Insert(10, " ");
+                        DateTime.TryParse(newEndTime, out endtime);
 
+                    }else if(endtime.ToString().Split(' ')[1].Split(':')[0].Contains("11"))
+                    {
+                        string newEndTime = (endtime.ToString().Split(' ')[0] + 
+                            endtime.ToString().Split(' ')[1].Replace("11", "23")).Insert(10, " ");
+                        DateTime.TryParse(newEndTime, out endtime);
+                    }
+                    
+                    executionTime = endtime.Subtract(starttime).TotalSeconds;
+                }
                 if (executionTime < 0)
                 {
                     endtime = endtime.AddHours(12);
