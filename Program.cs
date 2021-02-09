@@ -15,6 +15,14 @@ namespace analyzeLogs
         public static List<double> executionTimes = new List<double>();
         static void Main(string[] args)
         {
+            StringBuilder builder = getData();
+
+            Console.WriteLine(builder);
+            Console.ReadKey();
+        }
+
+        private static StringBuilder getData()
+        {
             string[] logs = getLogs(Directory.GetCurrentDirectory() + "\\Logs");
             string updateText = "";
             Dictionary<DateTime, Tuple<double, int>> averageExecutionByDate = new Dictionary<DateTime, Tuple<double, int>>();
@@ -35,13 +43,11 @@ namespace analyzeLogs
                 data.averageExecutionTime.ToString().Replace(',', '.') + "," + totalUpdates.ToString());
             builder.AppendLine().AppendLine();
 
-            generateData(averageExecutionByDate, averageExecutionByHour, updatesByDate, updatesByHour, builder);
-
-            Console.WriteLine(builder);
-            Console.ReadKey();
+            generateStringData(averageExecutionByDate, averageExecutionByHour, updatesByDate, updatesByHour, builder);
+            return builder;
         }
 
-        private static void generateData(Dictionary<DateTime, Tuple<double, int>> averageExecutionByDate, Dictionary<int, Tuple<double, int>> averageExecutionByHour, Dictionary<DateTime, Tuple<int>> updatesByDate, Dictionary<int, Tuple<int, int>> updatesByHour, StringBuilder builder)
+        private static void generateStringData(Dictionary<DateTime, Tuple<double, int>> averageExecutionByDate, Dictionary<int, Tuple<double, int>> averageExecutionByHour, Dictionary<DateTime, Tuple<int>> updatesByDate, Dictionary<int, Tuple<int, int>> updatesByHour, StringBuilder builder)
         {
             builder.Append("Date, Average execution time for this day, updates made this day\n");
             foreach (var item in averageExecutionByDate)
