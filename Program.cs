@@ -66,7 +66,7 @@ namespace analyzeLogs
 
             builder.AppendLine().AppendLine();
 
-            builder.Append("The following hour ranges includes all days").AppendLine().AppendLine();
+            builder.Append("The following hour ranges includes averages for all days").AppendLine().AppendLine();
 
             builder.Append("Hour, Average execution time for this hour, Average Updates made this hour\n");
             foreach (var item in averageExecutionByHour)
