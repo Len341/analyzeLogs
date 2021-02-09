@@ -159,18 +159,18 @@ namespace analyzeLogs
                     if(endtime.ToString().Split(' ')[1].Split(':')[0].Contains("12"))
                     {
                         string newEndTime = (endtime.ToString().Split(' ')[0] + 
-                            endtime.ToString().Split(' ')[1].Replace("12", "00")).Insert(10, " ");
-                        DateTime.TryParse(newEndTime, System.Globalization.CultureInfo.InvariantCulture, 
-                            System.Globalization.DateTimeStyles.AdjustToUniversal, out endtime);
+                            endtime.ToString().Split(' ')[1].Split(':')[0].Replace("12", "00") + ":" +
+                            endtime.ToString().Split(' ')[1].Split(':')[1] + ":" + endtime.ToString().Split(' ')[1].Split(':')[2]).Insert(10, " ");
+                        endtime = DateTime.Parse(newEndTime, System.Globalization.CultureInfo.InvariantCulture);
 
                     }else if(endtime.ToString().Split(' ')[1].Split(':')[0].Contains("11"))
                     {
                         string newEndTime = (endtime.ToString().Split(' ')[0] + 
-                            endtime.ToString().Split(' ')[1].Replace("11", "23")).Insert(10, " ");
-                        DateTime.TryParse(newEndTime, System.Globalization.CultureInfo.InvariantCulture, 
-                            System.Globalization.DateTimeStyles.AdjustToUniversal, out endtime);
+                            endtime.ToString().Split(' ')[1].Split(':')[0].Replace("11", "23")+ ":" +
+                            endtime.ToString().Split(' ')[1].Split(':')[1] + ":" + endtime.ToString().Split(' ')[1].Split(':')[2]
+                            ).Insert(10, " ");
+                        endtime = DateTime.Parse(newEndTime, System.Globalization.CultureInfo.InvariantCulture);
                     }
-                    
                     executionTime = endtime.Subtract(starttime).TotalSeconds;
                 }
                 if (executionTime < 0)
