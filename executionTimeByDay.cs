@@ -8,7 +8,7 @@ namespace analyzeLogs
 {
     public class executionTimeByDay
     {
-        public DateTime day { get; set; }
+        public string day { get; set; }
         public double executionTime { get; set; }
     }
 }

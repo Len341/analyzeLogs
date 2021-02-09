@@ -17,7 +17,7 @@ namespace analyzeLogs
         {
             StringBuilder builder = getData();
 
-            Console.WriteLine(builder);
+            Console.WriteLine(builder.ToString());
             Console.ReadKey();
         }
 
@@ -25,9 +25,9 @@ namespace analyzeLogs
         {
             string[] logs = getLogs(Directory.GetCurrentDirectory() + "\\Logs");
             string updateText = "";
-            Dictionary<DateTime, Tuple<double, int>> averageExecutionByDate = new Dictionary<DateTime, Tuple<double, int>>();
+            Dictionary<string, Tuple<double, int>> averageExecutionByDate = new Dictionary<string, Tuple<double, int>>();
             Dictionary<int, Tuple<double, int>> averageExecutionByHour = new Dictionary<int, Tuple<double, int>>();
-            Dictionary<DateTime, Tuple<int>> updatesByDate = new Dictionary<DateTime, Tuple<int>>();
+            Dictionary<string, Tuple<int>> updatesByDate = new Dictionary<string, Tuple<int>>();
             Dictionary<int, Tuple<int, int>> updatesByHour = new Dictionary<int, Tuple<int, int>>();
             updateText = processLogs(logs, updateText);
 
@@ -47,7 +47,8 @@ namespace analyzeLogs
             return builder;
         }
 
-        private static void generateStringData(Dictionary<DateTime, Tuple<double, int>> averageExecutionByDate, Dictionary<int, Tuple<double, int>> averageExecutionByHour, Dictionary<DateTime, Tuple<int>> updatesByDate, Dictionary<int, Tuple<int, int>> updatesByHour, StringBuilder builder)
+        private static void generateStringData(Dictionary<string, Tuple<double, int>> averageExecutionByDate,
+            Dictionary<int, Tuple<double, int>> averageExecutionByHour, Dictionary<string, Tuple<int>> updatesByDate, Dictionary<int, Tuple<int, int>> updatesByHour, StringBuilder builder)
         {
             builder.Append("Date, Average execution time for this day, updates made this day\n");
             foreach (var item in averageExecutionByDate)
@@ -83,14 +84,13 @@ namespace analyzeLogs
                     if (updatehour.Key == item.Key)
                     {
                         builder.Append("," + (updatehour.Value.Item1 / updatehour.Value.Item2).ToString().Replace(',', '.'));
-                        Console.WriteLine();
                     }
                 }
                 builder.AppendLine();
             }
         }
 
-        private static void getAverages(Dictionary<DateTime, Tuple<double, int>> averageExecutionByDate, Dictionary<int, Tuple<double, int>> averageExecutionByHour, Dictionary<DateTime, Tuple<int>> updatesByDate, Dictionary<int, Tuple<int, int>> updatesByHour)
+        private static void getAverages(Dictionary<string, Tuple<double, int>> averageExecutionByDate, Dictionary<int, Tuple<double, int>> averageExecutionByHour, Dictionary<string, Tuple<int>> updatesByDate, Dictionary<int, Tuple<int, int>> updatesByHour)
         {
             foreach (var item in data.averageExecutionTimeByDay)
             {
@@ -181,7 +181,7 @@ namespace analyzeLogs
             });
             data.averageExecutionTimeByDay.Add(new executionTimeByDay()
             {
-                day = starttime.Date,
+                day = starttime.Date.ToString("dd/MM/yyyy"),
                 executionTime = executionTime
             });
             data.avgNumberOfUpdatesByHour.Add(new updatesByHour()
@@ -191,13 +191,14 @@ namespace analyzeLogs
             });
             data.numberOfUpdatesByDay.Add(new updatesByDay()
             {
-                day = starttime.Date,
+                day = starttime.Date.ToString("dd/MM/yyyy"),
                 updates = updates
             });
         }
 
         public static void getUpdates(string updateText)
         {
+            updates = 0;
             while (updateText.IndexOf("Keywords remaining after filter:") > 0)
             {
                 string firstUpdates = updateText.Substring(updateText.IndexOf("Keywords remaining after filter:"),

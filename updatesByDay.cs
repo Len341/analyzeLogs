@@ -8,7 +8,7 @@ namespace analyzeLogs
 {
     public class updatesByDay
     {
-        public DateTime day { get; set; }
+        public string day { get; set; }
         public int updates { get; set; }
     }
 }
