@@ -151,9 +151,8 @@ namespace analyzeLogs
                 date = date.Insert(10, " ");
                 updateText = text;
                 getUpdates(updateText);
-                DateTime.TryParse(date, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AdjustToUniversal, out DateTime starttime);
-                DateTime.TryParse(text.Substring(text.LastIndexOf(']') - 19, 19), System.Globalization.CultureInfo.InvariantCulture, 
-                    System.Globalization.DateTimeStyles.AdjustToUniversal, out DateTime endtime);
+                DateTime starttime = DateTime.Parse(date, System.Globalization.CultureInfo.InvariantCulture);
+                DateTime endtime = DateTime.Parse(text.Substring(text.LastIndexOf(']') - 19, 19), System.Globalization.CultureInfo.InvariantCulture);
                 double executionTime = endtime.Subtract(starttime).TotalSeconds;
                 if(starttime.Hour == 23 || starttime.Hour == 0)
                 {
