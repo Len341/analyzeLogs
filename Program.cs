@@ -24,12 +24,11 @@ namespace analyzeLogs
         private static StringBuilder getData()
         {
             string[] logs = getLogs(Directory.GetCurrentDirectory() + "\\Logs");
-            string updateText = "";
             Dictionary<string, Tuple<double, int>> averageExecutionByDate = new Dictionary<string, Tuple<double, int>>();
             Dictionary<int, Tuple<double, int>> averageExecutionByHour = new Dictionary<int, Tuple<double, int>>();
             Dictionary<string, Tuple<int>> updatesByDate = new Dictionary<string, Tuple<int>>();
             Dictionary<int, Tuple<int, int>> updatesByHour = new Dictionary<int, Tuple<int, int>>();
-            updateText = processLogs(logs, updateText);
+            processLogs(logs);
 
             getAverages(averageExecutionByDate, averageExecutionByHour, updatesByDate, updatesByHour);
 
@@ -141,16 +140,15 @@ namespace analyzeLogs
             }
         }
 
-        private static string processLogs(string[] logs, string updateText)
+        private static void processLogs(string[] logs)
         {
             foreach (string log in logs)
             {
                 string text = File.ReadAllText(log);
                 string date = log.Substring(log.LastIndexOf(@"Logs\") + 5, 19);
-                date = date.Split(' ')[0] + date.Split(' ')[1].Replace("-", ":");
-                date = date.Insert(10, " ");
-                updateText = text;
-                getUpdates(updateText);
+                date = (date.Split(' ')[0] + date.Split(' ')[1].Replace("-", ":")).Insert(10, " ");
+
+                getUpdates(text);
                 DateTime starttime = DateTime.Parse(date, System.Globalization.CultureInfo.InvariantCulture);
                 DateTime endtime = DateTime.Parse(text.Substring(text.LastIndexOf(']') - 19, 19), System.Globalization.CultureInfo.InvariantCulture);
                 double executionTime = endtime.Subtract(starttime).TotalSeconds;
@@ -158,7 +156,6 @@ namespace analyzeLogs
                 executionTimes.Add(executionTime);
                 createClasses(starttime, executionTime);
             }
-            return updateText;
         }
 
         private static void ensureCorrectExecutionTimes(DateTime starttime, ref DateTime endtime, ref double executionTime)
